@@ -83,6 +83,10 @@ namespace Snork.FluentNHibernateTools
             IPersistenceConfigurer configurer;
             switch (providerType)
             {
+                case ProviderTypeEnum.SQLite:
+                    configurer = ConfigureProvider(() => SQLiteConfiguration.Standard, connectionString,
+                        options.DefaultSchema);
+                    break;
                 case ProviderTypeEnum.JetDriver:
                     configurer = ConfigureProvider(() => JetDriverConfiguration.Standard, connectionString,
                         options.DefaultSchema);
