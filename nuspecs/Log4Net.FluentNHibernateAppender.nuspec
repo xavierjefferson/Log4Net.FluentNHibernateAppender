@@ -29,8 +29,10 @@
 
   </metadata>
   <files>
-    <file src="..\Hangfire.FluentNHibernateStorage\bin\debug\Hangfire.FluentNHibernateStorage.dll" target="lib\net45" />
-    <file src="..\Hangfire.FluentNHibernateStorage\bin\debug\Hangfire.FluentNHibernateStorage.pdb" target="lib\net45" />
-    <file src="..\Hangfire.FluentNHibernateStorage\**\*.cs;" target="src" exclude="**\obj*\**\*.cs" />
+    <file src="..\src\Log4Net.FluentNHibernateAppender\bin\debug\Log4Net.FluentNHibernateAppender.dll" target="lib\net40" />
+    <file src="..\src\Log4Net.FluentNHibernateAppender\bin\debug\Log4Net.FluentNHibernateAppender.pdb" target="lib\net40" />
+    <file src="..\src\Log4Net.FluentNHibernateAppender\bin\debug\Snork.FluentNHibernateTools.dll" target="lib\net40" />
+    <file src="..\src\Log4Net.FluentNHibernateAppender\bin\debug\Snork.FluentNHibernateTools.pdb" target="lib\net40" />
+    <file src="..\src\Log4Net.FluentNHibernateAppender\**\*.cs;" target="src" exclude="**\obj*\**\*.cs" />
   </files>
 </package>

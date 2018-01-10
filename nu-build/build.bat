@@ -1,3 +1,3 @@
 mkdir .\packages
-..\.nuget\nuget.exe pack ..\nuspecs\Hangfire.FluentNHibernateStorage.nuspec -outputdirectory .\packages
+..\.nuget\nuget.exe pack ..\nuspecs\Log4Net.FluentNHibernateAppender.nuspec -outputdirectory .\packages
 pause
