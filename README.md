@@ -62,7 +62,7 @@ The enumeration values correspond to the list of providers NHibernate supports. 
 
 
 ### Oracle
-Be advised that two of the four Oracle options (OracleClient9Managed, OracleClient10Managed) use the **Oracle.ManagedDataAccess** client library internally, while the other two (OracleClient9, OracleClient10) use the **System.Data.OracleClient** client library.  I'm not Oracle savvy, and I could only get **Oracle.ManagedDataAccess** to work properly (the other is NHibernate's default).  You may have a different experience.  This implementation was tested against Oracle 11g Express on Oracle Linux.
+Be advised that two of the four Oracle options (OracleClient9Managed, OracleClient10Managed) use the **Oracle.ManagedDataAccess** client library internally, while the other two (OracleClient9, OracleClient10) use the **System.Data.OracleClient** client library.  I'm not Oracle savvy, and I could only get **Oracle.ManagedDataAccess** to work properly (the other is NHibernate's default).  You may have a different experience. 
 
 
 ## Usage  
@@ -76,12 +76,11 @@ namespace Log4Net.FluentNHibernateAppender.SampleApplication
 {
     public class DemoClass
     {
-        private static BackgroundJobServer _backgroundJobServer;
-
         private static void Main(string[] args)
         {
 			NHibernateAppender.Configure(ProviderTypeEnum.MySQL,
-                ConfigurationManager.ConnectionStrings["mysql"].ConnectionString, "mysqlappender").AddToRootHierarchy();
+                ConfigurationManager.ConnectionStrings["mysql"].ConnectionString, 
+				"mysqlappender").AddToRootHierarchy();
 
         }
     }

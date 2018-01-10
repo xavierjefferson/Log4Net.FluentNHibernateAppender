@@ -1,25 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Caching;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 using log4net.Appender;
 using log4net.Core;
 using NHibernate;
 using NHibernate.Tool.hbm2ddl;
+using NHibernate.Util;
 using Snork.FluentNHibernateTools;
 
 namespace Log4Net.FluentNHibernateAppender
 {
     public class NHibernateAppender : AppenderSkeleton
     {
+        private readonly string _cacheKey = Guid.NewGuid().ToString();
         private readonly IPersistenceConfigurer _configurer;
 
         private readonly Dictionary<IPersistenceConfigurer, ISessionFactory> _sessionFactories =
             new Dictionary<IPersistenceConfigurer, ISessionFactory>();
 
-
         private bool _testBuild;
+
 
         public NHibernateAppender(IPersistenceConfigurer persistenceConfigurer)
         {
@@ -140,26 +143,64 @@ namespace Log4Net.FluentNHibernateAppender
 
         protected override void Append(LoggingEvent[] loggingEvents)
         {
-            using (var statelessSession = GetStatelessSession())
+            try
             {
-                foreach (var loggingEvent in loggingEvents)
+                var cache = MemoryCache.Default;
+                var queue = cache[_cacheKey] as Queue<LoggingEvent>;
+                if (queue == null)
                 {
-                    statelessSession.Insert(new LogEntry
-                    {
-                        StackTrace =
-                            loggingEvent.ExceptionObject?.StackTrace,
-                        Date = loggingEvent.TimeStamp,
-                        Thread = loggingEvent.ThreadName,
-                        Level = loggingEvent.Level.ToString(),
-                        Logger = loggingEvent.LoggerName,
-                        Method = loggingEvent.LocationInformation.MethodName,
-                        Message = loggingEvent.RenderedMessage,
-                        Exception = loggingEvent.GetExceptionString(),
-                        MachineName = Environment.MachineName,
-                        Domain = loggingEvent.Domain,
-                        UserName = MonoDetection.IsRunningMono ? null : loggingEvent.UserName
-                    });
+                    queue = new Queue<LoggingEvent>(loggingEvents);
                 }
+                else
+                {
+                    foreach (var loggingEvent in loggingEvents)
+                    {
+                        if (queue.Count < 1000)
+                        {
+                            queue.Enqueue(loggingEvent);
+                        }
+                    }
+                }
+                using (var statelessSession = GetStatelessSession())
+                {
+                    LoggingEvent loggingEvent = null;
+                    try
+                    {
+                        while (queue.Any())
+                        {
+                            loggingEvent = queue.Dequeue();
+
+                            statelessSession.Insert(new LogEntry
+                            {
+                                StackTrace =
+                                    loggingEvent.ExceptionObject?.StackTrace,
+                                Date = loggingEvent.TimeStamp,
+                                Thread = loggingEvent.ThreadName,
+                                Level = loggingEvent.Level.ToString(),
+                                Logger = loggingEvent.LoggerName,
+                                Method = loggingEvent.LocationInformation.MethodName,
+                                Message = loggingEvent.RenderedMessage,
+                                Exception = loggingEvent.GetExceptionString(),
+                                MachineName = Environment.MachineName,
+                                Domain = loggingEvent.Domain,
+                                UserName = MonoDetection.IsRunningMono ? null : loggingEvent.UserName
+                            });
+                            loggingEvent = null;
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        if (loggingEvent != null)
+                        {
+                            queue.Enqueue(loggingEvent);
+                        }
+                        cache.Set(_cacheKey, queue, DateTimeOffset.Now.AddMinutes(5));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceError("Issue with {0} : {1}",this.GetType().Name, ex.Message);
             }
         }
     }

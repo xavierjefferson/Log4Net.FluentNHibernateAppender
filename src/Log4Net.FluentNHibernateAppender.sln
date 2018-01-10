@@ -7,6 +7,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Log4Net.FluentNHibernateApp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snork.FluentNHibernateTools", "Snork.FluentNHibernateTools\Snork.FluentNHibernateTools.csproj", "{C3A3C91F-71AE-4A9F-88BF-7662B2C60F95}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{AC7419D9-6192-448C-A883-32C83824E5ED}"
+	ProjectSection(SolutionItems) = preProject
+		..\.gitattributes = ..\.gitattributes
+		..\.gitignore = ..\.gitignore
+		..\COPYING = ..\COPYING
+		..\COPYING.LESSER = ..\COPYING.LESSER
+		..\LICENSE.MD = ..\LICENSE.MD
+		..\nuspecs\Log4Net.FluentNHibernateAppender.nuspec = ..\nuspecs\Log4Net.FluentNHibernateAppender.nuspec
+		..\README.md = ..\README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
