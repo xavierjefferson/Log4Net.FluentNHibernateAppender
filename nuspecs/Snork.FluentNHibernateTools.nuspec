@@ -3,7 +3,7 @@
 <package>
   <metadata>
     <id>Snork.FluentNHibernateTools</id>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <authors>Xavier Jefferson</authors>
     <owners>XavierJefferson</owners>
     <licenseUrl>https://www.gnu.org/licenses/lgpl-3.0.en.html</licenseUrl>
