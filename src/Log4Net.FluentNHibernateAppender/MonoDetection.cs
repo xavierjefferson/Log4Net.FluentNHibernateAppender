@@ -2,7 +2,7 @@
 
 namespace Log4Net.FluentNHibernateAppender
 {
-    public static class MonoDetection
+    static class MonoDetection
     {
         private static bool? _isRunningMono;
 

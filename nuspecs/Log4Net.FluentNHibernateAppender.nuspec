@@ -3,7 +3,7 @@
 <package>
   <metadata>
     <id>Log4Net.FluentNHibernateAppender</id>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <authors>Xavier Jefferson</authors>
     <owners>XavierJefferson</owners>
     <licenseUrl>https://www.gnu.org/licenses/lgpl-3.0.en.html</licenseUrl>
@@ -12,7 +12,9 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A simple-to-configure Log4Net provider for SQL Server, MySQL, Oracle, DB/2, PostgreSQL, SQLite, MS SQL CE, MS Access and Firebird</description>
     <releaseNotes>
-      Gracefully handle internal exceptions by caching up to  1000 events
+        Rename entry properties to match Log4Net properties
+        Add facilities to query, count, and delete table rows
+        Add retry capability
     </releaseNotes>
     <copyright>Copyright © 2017 Xavier Jefferson</copyright>
     <tags>log4net storage provider msce sqlite access mssql mysql oracle postgresql firebird db2</tags>

@@ -57,6 +57,7 @@
     <Compile Include="LogEntryMap.cs" />
     <Compile Include="NHibernateAppender.cs" />
     <Compile Include="NHibernateAppenderHelper.cs" />
+    <Compile Include="NHibernateAppenderOptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Runtime.Caching;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 using log4net.Appender;
 using log4net.Core;
 using NHibernate;
+using NHibernate.Linq;
 using NHibernate.Tool.hbm2ddl;
-using NHibernate.Util;
 using Snork.FluentNHibernateTools;
 
 namespace Log4Net.FluentNHibernateAppender
@@ -17,29 +20,35 @@ namespace Log4Net.FluentNHibernateAppender
     {
         private readonly string _cacheKey = Guid.NewGuid().ToString();
         private readonly IPersistenceConfigurer _configurer;
+        private readonly NHibernateAppenderOptions _options;
 
         private readonly Dictionary<IPersistenceConfigurer, ISessionFactory> _sessionFactories =
             new Dictionary<IPersistenceConfigurer, ISessionFactory>();
 
         private bool _testBuild;
 
+        public NHibernateAppender(IPersistenceConfigurer persistenceConfigurer,
+            NHibernateAppenderOptions options = null)
 
-        public NHibernateAppender(IPersistenceConfigurer persistenceConfigurer)
         {
+            _options = options ?? new NHibernateAppenderOptions();
             _configurer = persistenceConfigurer;
         }
 
         public static NHibernateAppender Configure(ProviderTypeEnum providerType, string nameOrConnectionString,
-            string appenderName, string defaultSchema = null)
+            string appenderName, NHibernateAppenderOptions options = null)
         {
+            options = options ?? new NHibernateAppenderOptions();
             var tmp = FluentNHibernatePersistenceBuilder.Build(providerType,
-                nameOrConnectionString, defaultSchema);
-            return Configure(tmp.PersistenceConfigurer, appenderName);
+                nameOrConnectionString, options);
+            return Configure(tmp.PersistenceConfigurer, appenderName, options);
         }
 
-        public static NHibernateAppender Configure(IPersistenceConfigurer persistenceConfigurer, string appenderName)
+        public static NHibernateAppender Configure(IPersistenceConfigurer persistenceConfigurer, string appenderName,
+            NHibernateAppenderOptions options = null)
         {
-            var appender = new NHibernateAppender(persistenceConfigurer)
+            options = options ?? new NHibernateAppenderOptions();
+            var appender = new NHibernateAppender(persistenceConfigurer, options)
             {
                 Name = appenderName
             };
@@ -67,10 +76,6 @@ namespace Log4Net.FluentNHibernateAppender
             return _configurer;
         }
 
-        public IStatelessSession GetStatelessSession(IPersistenceConfigurer c)
-        {
-            return GetSessionFactory(c).OpenStatelessSession();
-        }
 
         public IStatelessSession GetStatelessSession()
         {
@@ -141,15 +146,46 @@ namespace Log4Net.FluentNHibernateAppender
             Append(new[] {loggingEvent});
         }
 
+        public int GetEntryCount()
+        {
+            using (var statelessSession = GetStatelessSession())
+            {
+                return statelessSession.Query<LogEntry>().Count();
+            }
+        }
+
+        public void DeleteEntries(Expression<Func<LogEntry, bool>> matchExpression)
+        {
+            using (var statelessSession = GetStatelessSession())
+            {
+                var ids = statelessSession.Query<LogEntry>().Where(matchExpression).Select(i => i.Id).ToList();
+                var qry = string.Format("delete from `{0}` where {1} in (:ids)", nameof(LogEntry), nameof(LogEntry.Id));
+                for (var batchIndex = 0; batchIndex < ids.Count; batchIndex += 100)
+                {
+                    statelessSession.CreateQuery(qry)
+                        .SetParameterList("ids", ids.Skip(batchIndex).Take(100))
+                        .ExecuteUpdate();
+                }
+            }
+        }
+
+        public T GetEntriesFromIQueryable<T>(Func<IQueryable<LogEntry>, T> transformFunc)
+        {
+            using (var statelessSession = GetStatelessSession())
+            {
+                return transformFunc(statelessSession.Query<LogEntry>());
+            }
+        }
+
         protected override void Append(LoggingEvent[] loggingEvents)
         {
             try
             {
                 var cache = MemoryCache.Default;
-                var queue = cache[_cacheKey] as Queue<LoggingEvent>;
+                var queue = cache[_cacheKey] as Queue<WrappedEvent>;
                 if (queue == null)
                 {
-                    queue = new Queue<LoggingEvent>(loggingEvents);
+                    queue = new Queue<WrappedEvent>(loggingEvents.Select(i => new WrappedEvent {LoggingEvent = i}));
                 }
                 else
                 {
@@ -157,42 +193,50 @@ namespace Log4Net.FluentNHibernateAppender
                     {
                         if (queue.Count < 1000)
                         {
-                            queue.Enqueue(loggingEvent);
+                            queue.Enqueue(new WrappedEvent {LoggingEvent = loggingEvent});
                         }
                     }
                 }
                 using (var statelessSession = GetStatelessSession())
                 {
-                    LoggingEvent loggingEvent = null;
+                    WrappedEvent wrappedEvent = null;
                     try
                     {
                         while (queue.Any())
                         {
-                            loggingEvent = queue.Dequeue();
-
-                            statelessSession.Insert(new LogEntry
+                            wrappedEvent = queue.Dequeue();
+                            var logEntry = new LogEntry
                             {
                                 StackTrace =
-                                    loggingEvent.ExceptionObject?.StackTrace,
-                                Date = loggingEvent.TimeStamp,
-                                Thread = loggingEvent.ThreadName,
-                                Level = loggingEvent.Level.ToString(),
-                                Logger = loggingEvent.LoggerName,
-                                Method = loggingEvent.LocationInformation.MethodName,
-                                Message = loggingEvent.RenderedMessage,
-                                Exception = loggingEvent.GetExceptionString(),
+                                    wrappedEvent.LoggingEvent.ExceptionObject?.StackTrace,
+                                TimeStamp = wrappedEvent.LoggingEvent.TimeStamp,
+                                ThreadName = wrappedEvent.LoggingEvent.ThreadName,
+                                Level = wrappedEvent.LoggingEvent.Level.ToString(),
+                                LoggerName = wrappedEvent.LoggingEvent.LoggerName,
+                                MethodName = wrappedEvent.LoggingEvent.LocationInformation?.MethodName,
+                                LineNumber = wrappedEvent.LoggingEvent.LocationInformation?.LineNumber,
+                                ClassName = wrappedEvent.LoggingEvent.LocationInformation?.ClassName,
+                                FileName = wrappedEvent.LoggingEvent.LocationInformation?.FileName,
+                                Message = wrappedEvent.LoggingEvent.RenderedMessage,
+                                Exception = wrappedEvent.LoggingEvent.GetExceptionString(),
                                 MachineName = Environment.MachineName,
-                                Domain = loggingEvent.Domain,
-                                UserName = MonoDetection.IsRunningMono ? null : loggingEvent.UserName
-                            });
-                            loggingEvent = null;
+                                Domain = wrappedEvent.LoggingEvent.Domain,
+                                UserName = MonoDetection.IsRunningMono ? null : wrappedEvent.LoggingEvent.UserName
+                            };
+
+                            statelessSession.Insert(logEntry);
+                            wrappedEvent = null;
                         }
                     }
                     catch (Exception)
                     {
-                        if (loggingEvent != null)
+                        if (wrappedEvent != null)
                         {
-                            queue.Enqueue(loggingEvent);
+                            wrappedEvent.RetryCount++;
+                            if (wrappedEvent.RetryCount < _options.MaxRetries)
+                            {
+                                queue.Enqueue(wrappedEvent);
+                            }
                         }
                         cache.Set(_cacheKey, queue, DateTimeOffset.Now.AddMinutes(5));
                     }
@@ -200,8 +244,14 @@ namespace Log4Net.FluentNHibernateAppender
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Trace.TraceError("Issue with {0} : {1}",this.GetType().Name, ex.Message);
+                Trace.TraceError("Issue with {0} : {1}", GetType().Name, ex.Message);
             }
+        }
+
+        private class WrappedEvent
+        {
+            public int RetryCount { get; set; }
+            public LoggingEvent LoggingEvent { get; set; }
         }
     }
 }

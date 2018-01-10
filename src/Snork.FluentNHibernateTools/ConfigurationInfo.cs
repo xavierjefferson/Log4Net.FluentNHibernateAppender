@@ -4,15 +4,15 @@ namespace Snork.FluentNHibernateTools
 {
     public class ConfigurationInfo
     {
-        internal ConfigurationInfo(IPersistenceConfigurer configurer, string defaultSchema,
+        internal ConfigurationInfo(IPersistenceConfigurer configurer, FluentNHibernatePersistenceBuilderOptions options,
             ProviderTypeEnum providerType)
         {
             PersistenceConfigurer = configurer;
             ProviderType = providerType;
-            DefaultSchema = defaultSchema;
+            Options = options;
         }
 
-        public string DefaultSchema { get; }
+        public FluentNHibernatePersistenceBuilderOptions Options { get; }
         public ProviderTypeEnum ProviderType { get; }
         public IPersistenceConfigurer PersistenceConfigurer { get; }
     }

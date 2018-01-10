@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="ConfigurationInfo.cs" />
     <Compile Include="FluentNHibernatePersistenceBuilder.cs" />
+    <Compile Include="FluentNHibernatePersistenceBuilderOptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProviderTypeEnum.cs" />
   </ItemGroup>
