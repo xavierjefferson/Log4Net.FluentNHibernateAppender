@@ -1,7 +1,7 @@
 ﻿# Log4Net.FluentNHibernateAppender Storage - An Implementation for MS SQL Server, MySQL, PostgreSQL, Oracle, Firebird, and DB/2
 [![Latest version](https://img.shields.io/nuget/v/Log4Net.FluentNHibernateAppender.svg)](https://www.nuget.org/packages/Log4Net.FluentNHibernateAppender/) 
 
-A simple-to-configure FluentNHibernate storage implementation for [Log4Net] (http://logging.apache.org/log4net/). Supports  MS SQL Server, MySQL, PostgreSQL, Oracle, Firebird, DB/2, SQLite, MS Access (Jet), and SQL Server Compact Edition.
+A simple-to-configure FluentNHibernate storage implementation for [Log4Net](http://logging.apache.org/log4net/). Supports  MS SQL Server, MySQL, PostgreSQL, Oracle, Firebird, DB/2, SQLite, MS Access (Jet), and SQL Server Compact Edition.
 
 
 Run the following command in the NuGet Package Manager console to install Hangfire.FluentNHibernateStorage:
@@ -93,15 +93,15 @@ namespace Log4Net.FluentNHibernateAppender.SampleApplication
         }
     }
 
-	public class AnotherClass 
-	{
-	    //copy of snippet
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+    public class AnotherClass 
+    {
+        //copy of snippet
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		public static void SomeMethod(){
-			log.Info("Now I'm logging from another class.'")
-		}
-	}
+        public static void SomeMethod(){
+            log.Info("Now I'm logging from another class.'")
+        }
+    }
 }
 ```
 
@@ -122,7 +122,7 @@ You need to make a few changes to your app.config or web.config file:
  2. Add a `log4net` section
  3. In the `log4net` section, add the two `logger` entries as shown below.  This will keep NHibernate from spewing its internal logging into your database (unless you *want* that!).
  4. In the `log4net` section, add a `root` entry that sets your default minimum log level (DEBUG, INFO, WARN, ERROR).
- 5. You don't need to add an `appender`-type entry because the code above is doing that for you.  But you're free to add more - follow the examples shown [here] (https://logging.apache.org/log4net/release/config-examples.html).
+ 5. You don't need to add an `appender`-type entry because the code above is doing that for you.  But you're free to add more - follow the examples shown [here](https://logging.apache.org/log4net/release/config-examples.html).
 
 ```
 <configuration>
