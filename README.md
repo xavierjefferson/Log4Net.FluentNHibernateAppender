@@ -33,6 +33,30 @@ Install-Package Oracle.ManagedDataAccess
 Install-Package FirebirdSql.Data.FirebirdClient
 ```
 
+## Basic Table Structure
+
+Guess what?  You don't have to execute any scripts.  This package will create the appropriate table if it's needed, `LogEntry` (the name is not changeable) for you.  The appender will capture the items shown below, which will be sufficient for most uses.
+
+```
+CREATE TABLE `LogEntry` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `TimeStamp` datetime NOT NULL,
+  `ThreadName` varchar(64) NOT NULL,
+  `Level` varchar(10) NOT NULL,
+  `Logger` text NOT NULL,
+  `Method` varchar(200) NOT NULL,
+  `Message` text NOT NULL,
+  `Exception` text NOT NULL,
+  `StackTrace` text,
+  `MachineName` varchar(64) NOT NULL,
+  `Domain` varchar(64) NOT NULL,
+  `UserName` varchar(64) DEFAULT NULL,
+  `ClassName` varchar(255) DEFAULT NULL,
+  `LineNumber` varchar(64) DEFAULT NULL,
+  `FileName` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`Id`)  
+) 
+```
 
 ## Database Implementation Notes
 The package includes an enumeration of database providers AND their specific flavors of SQL across various SQL versions:
