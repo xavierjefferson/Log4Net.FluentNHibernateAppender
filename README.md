@@ -69,6 +69,8 @@ Be advised that two of the four Oracle options (OracleClient9Managed, OracleClie
 ## Configuration Code  
 
 As-is, this will create the appropriate tables in your database but there's a little more you'll need to do (read below) so you won't get more in the logs than you actually want.  This example would log to a MySQL database (and would required the MySQL.Data package installed), but you can easily point it to other databases.
+
+In a web application, you should put this configuration code in the `Application_Start` method of `global.asax`.
 ```
 using System;
 using System.Configuration;
