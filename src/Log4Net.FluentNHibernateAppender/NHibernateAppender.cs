@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.Caching;
-using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 using log4net.Appender;
 using log4net.Core;
 using NHibernate;
 using NHibernate.Linq;
-using NHibernate.Tool.hbm2ddl;
 using Snork.FluentNHibernateTools;
 
 namespace Log4Net.FluentNHibernateAppender
@@ -20,50 +17,26 @@ namespace Log4Net.FluentNHibernateAppender
     {
         private readonly string _cacheKey = Guid.NewGuid().ToString();
         private readonly NHibernateAppenderOptions _options;
-        private readonly ISessionFactory _sessionFactory;
 
-        public NHibernateAppender(IPersistenceConfigurer persistenceConfigurer,
+        public NHibernateAppender(IPersistenceConfigurer persistenceConfigurer, string appenderName,
             NHibernateAppenderOptions options = null)
 
         {
             _options = options ?? new NHibernateAppenderOptions();
-
-            var fluentConfiguration = Fluently.Configure()
-                .Mappings(x => x.FluentMappings.AddFromAssemblyOf<LogEntryMap>());
-
-            var configuration = fluentConfiguration
-                .Database(persistenceConfigurer);
-            if (_options.UpdateSchema)
-            {
-                configuration.ExposeConfiguration(cfg =>
-                    {
-                        var a = new SchemaUpdate(cfg);
-                        using (var stringWriter = new StringWriter())
-                        {
-                            try
-                            {
-                                a.Execute(i => stringWriter.WriteLine(i), true);
-                            }
-                            catch (Exception ex)
-                            {
-                                throw;
-                            }
-                            var d = stringWriter.ToString();
-                        }
-                    })
-                    .BuildConfiguration();
-            }
-
-            _sessionFactory = configuration
-                .BuildSessionFactory();
+            Info = SessionFactoryBuilder.GetFromAssemblyOf<LogEntryMap>(persistenceConfigurer,
+                options);
+            Name = appenderName;
         }
 
-        private NHibernateAppender(ISessionFactory sessionFactory, NHibernateAppenderOptions options = null)
+
+        public NHibernateAppender(SessionFactoryInfo info, string appenderName)
         {
-            options = options ?? new NHibernateAppenderOptions();
-            _sessionFactory = sessionFactory;
-            _options = options;
+            Info = info;
+            Name = appenderName;
         }
+
+        public SessionFactoryInfo Info { get; }
+
 
         public static NHibernateAppender Configure(ProviderTypeEnum providerType, string nameOrConnectionString,
             string appenderName, NHibernateAppenderOptions options = null)
@@ -72,14 +45,14 @@ namespace Log4Net.FluentNHibernateAppender
             var info =
                 SessionFactoryBuilder.GetFromAssemblyOf<LogEntry>(providerType,
                     nameOrConnectionString, options);
-            return new NHibernateAppender(info.SessionFactory);
+            return new NHibernateAppender(info, appenderName);
         }
 
         public static NHibernateAppender Configure(IPersistenceConfigurer persistenceConfigurer, string appenderName,
             NHibernateAppenderOptions options = null)
         {
             options = options ?? new NHibernateAppenderOptions();
-            var appender = new NHibernateAppender(persistenceConfigurer, options)
+            var appender = new NHibernateAppender(persistenceConfigurer, appenderName, options)
             {
                 Name = appenderName
             };
@@ -88,12 +61,12 @@ namespace Log4Net.FluentNHibernateAppender
 
         public IStatelessSession GetStatelessSession()
         {
-            return _sessionFactory.OpenStatelessSession();
+            return Info.SessionFactory.OpenStatelessSession();
         }
 
         public ISession GetSession()
         {
-            return _sessionFactory.OpenSession();
+            return Info.SessionFactory.OpenSession();
         }
 
 

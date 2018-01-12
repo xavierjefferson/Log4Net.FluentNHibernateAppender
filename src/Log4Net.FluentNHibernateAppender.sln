@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.26730.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Log4Net.FluentNHibernateAppender", "Log4Net.FluentNHibernateAppender\Log4Net.FluentNHibernateAppender.csproj", "{B3CB7E73-1A7F-4F38-B7F9-C2474A6F4D1F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snork.FluentNHibernateTools", "Snork.FluentNHibernateTools\Snork.FluentNHibernateTools.csproj", "{C3A3C91F-71AE-4A9F-88BF-7662B2C60F95}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{AC7419D9-6192-448C-A883-32C83824E5ED}"
 	ProjectSection(SolutionItems) = preProject
 		..\.gitattributes = ..\.gitattributes
@@ -16,7 +14,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{
 		..\LICENSE.MD = ..\LICENSE.MD
 		..\nuspecs\Log4Net.FluentNHibernateAppender.nuspec = ..\nuspecs\Log4Net.FluentNHibernateAppender.nuspec
 		..\README.md = ..\README.md
-		..\nuspecs\Snork.FluentNHibernateTools.nuspec = ..\nuspecs\Snork.FluentNHibernateTools.nuspec
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Log4Net.FluentNHibernateAppender.Example", "Log4Net.FluentNHibernateAppender.Example\Log4Net.FluentNHibernateAppender.Example.csproj", "{4DE5A0A7-922A-4B4D-8C2B-D966E612E9C1}"
@@ -31,10 +28,6 @@ Global
 		{B3CB7E73-1A7F-4F38-B7F9-C2474A6F4D1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3CB7E73-1A7F-4F38-B7F9-C2474A6F4D1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3CB7E73-1A7F-4F38-B7F9-C2474A6F4D1F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C3A3C91F-71AE-4A9F-88BF-7662B2C60F95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C3A3C91F-71AE-4A9F-88BF-7662B2C60F95}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C3A3C91F-71AE-4A9F-88BF-7662B2C60F95}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C3A3C91F-71AE-4A9F-88BF-7662B2C60F95}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4DE5A0A7-922A-4B4D-8C2B-D966E612E9C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4DE5A0A7-922A-4B4D-8C2B-D966E612E9C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4DE5A0A7-922A-4B4D-8C2B-D966E612E9C1}.Release|Any CPU.ActiveCfg = Release|Any CPU

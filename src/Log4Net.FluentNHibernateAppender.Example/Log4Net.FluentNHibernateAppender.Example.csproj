@@ -51,6 +51,9 @@
     <Reference Include="NHibernate, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <HintPath>..\packages\NHibernate.4.0.0.4000\lib\net40\NHibernate.dll</HintPath>
     </Reference>
+    <Reference Include="Snork.FluentNHibernateTools, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Snork.FluentNHibernateTools.1.1.6600\lib\net40\Snork.FluentNHibernateTools.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -77,10 +80,6 @@
     <ProjectReference Include="..\Log4Net.FluentNHibernateAppender\Log4Net.FluentNHibernateAppender.csproj">
       <Project>{b3cb7e73-1a7f-4f38-b7f9-c2474a6f4d1f}</Project>
       <Name>Log4Net.FluentNHibernateAppender</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Snork.FluentNHibernateTools\Snork.FluentNHibernateTools.csproj">
-      <Project>{c3a3c91f-71ae-4a9f-88bf-7662b2c60f95}</Project>
-      <Name>Snork.FluentNHibernateTools</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
