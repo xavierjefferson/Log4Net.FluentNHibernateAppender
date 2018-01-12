@@ -5,7 +5,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Web.Script.Serialization;
 using FluentNHibernate.Cfg;
-using NHibernate;
 using NHibernate.Tool.hbm2ddl;
 
 namespace Snork.FluentNHibernateTools
@@ -14,8 +13,8 @@ namespace Snork.FluentNHibernateTools
     {
         private static readonly object Mutex = new object();
 
-        private static readonly Dictionary<string, ISessionFactory> _sessionFactories =
-            new Dictionary<string, ISessionFactory>();
+        private static readonly Dictionary<string, SessionFactoryInfo> _sessionFactoryInfos =
+            new Dictionary<string, SessionFactoryInfo>();
 
         private static string CalculateMD5Hash(string input)
 
@@ -43,7 +42,7 @@ namespace Snork.FluentNHibernateTools
 
         public static SessionFactoryInfo GetByKey(string key)
         {
-            return new SessionFactoryInfo(key, _sessionFactories[key]);
+            return _sessionFactoryInfos[key];
         }
 
         public static SessionFactoryInfo GetFromAssemblyOf<T>(ProviderTypeEnum providerType,
@@ -54,7 +53,7 @@ namespace Snork.FluentNHibernateTools
             var key = CalculateMD5Hash(new JavaScriptSerializer().Serialize(keyInfo));
             lock (Mutex)
             {
-                if (!_sessionFactories.ContainsKey(key))
+                if (!_sessionFactoryInfos.ContainsKey(key))
                 {
                     var configurationInfo = FluentNHibernatePersistenceBuilder.Build(providerType,
                         nameOrConnectionString, options);
@@ -82,9 +81,10 @@ namespace Snork.FluentNHibernateTools
                         }
                     });
                     fluentConfiguration.BuildConfiguration();
-                    _sessionFactories[key] = fluentConfiguration.BuildSessionFactory();
+                    _sessionFactoryInfos[key] = new SessionFactoryInfo(key, fluentConfiguration.BuildSessionFactory(),
+                        providerType, options);
                 }
-                return new SessionFactoryInfo(key, _sessionFactories[key]);
+                return _sessionFactoryInfos[key];
             }
         }
     }

@@ -3,7 +3,7 @@
 <package>
   <metadata>
     <id>Snork.FluentNHibernateTools</id>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <authors>Xavier Jefferson</authors>
     <owners>XavierJefferson</owners>
     <licenseUrl>https://www.gnu.org/licenses/lgpl-3.0.en.html</licenseUrl>
@@ -12,7 +12,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Utilities for FluentNHibernate</description>
     <releaseNotes>
-        Add SessionFactoryBuilder
+        Add ProviderType and Options to SessionFactoryInfo
     </releaseNotes>
     <copyright>Copyright © 2017 Xavier Jefferson</copyright>
     <tags>fluentnhibernate</tags>
