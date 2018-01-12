@@ -3,20 +3,18 @@
 <package>
   <metadata>
     <id>Log4Net.FluentNHibernateAppender</id>
-    <version>1.0.3</version>
+    <version>1.1.1403</version>
     <authors>Xavier Jefferson</authors>
     <owners>XavierJefferson</owners>
     <licenseUrl>https://www.gnu.org/licenses/lgpl-3.0.en.html</licenseUrl>
     <projectUrl>https://github.com/xavierjefferson/Log4Net.FluentNHibernateAppender</projectUrl>
     <!--<iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>-->
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>A simple-to-configure Log4Net provider for SQL Server, MySQL, Oracle, DB/2, PostgreSQL, SQLite, MS SQL CE, MS Access and Firebird</description>
+    <description>A simple-to-configure Log4Net provider for SQL Server, MySQL, Oracle, DB/2, PostgreSQL, SQLite, MS SQL CE, MS Access, SQLAnywhere and Firebird</description>
     <releaseNotes>
-        Rename entry properties to match Log4Net properties
-        Add facilities to query, count, and delete table rows
-        Add retry capability
+        Update to use Snork.FluentNHibernateTools 1.1.6600
     </releaseNotes>
-    <copyright>Copyright © 2017 Xavier Jefferson</copyright>
+    <copyright>Copyright © 2018 Xavier Jefferson</copyright>
     <tags>log4net storage provider msce sqlite access mssql mysql oracle postgresql firebird db2</tags>
     <dependencies>
 		<dependency id="FluentNHibernate" version="2.0.3.0"   />
@@ -33,8 +31,6 @@
   <files>
     <file src="..\src\Log4Net.FluentNHibernateAppender\bin\debug\Log4Net.FluentNHibernateAppender.dll" target="lib\net40" />
     <file src="..\src\Log4Net.FluentNHibernateAppender\bin\debug\Log4Net.FluentNHibernateAppender.pdb" target="lib\net40" />
-    <file src="..\src\Log4Net.FluentNHibernateAppender\bin\debug\Snork.FluentNHibernateTools.dll" target="lib\net40" />
-    <file src="..\src\Log4Net.FluentNHibernateAppender\bin\debug\Snork.FluentNHibernateTools.pdb" target="lib\net40" />
     <file src="..\src\Log4Net.FluentNHibernateAppender\**\*.cs;" target="src" exclude="**\obj*\**\*.cs" />
   </files>
 </package>

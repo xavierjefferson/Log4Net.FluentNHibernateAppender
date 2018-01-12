@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.10
+VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Log4Net.FluentNHibernateAppender", "Log4Net.FluentNHibernateAppender\Log4Net.FluentNHibernateAppender.csproj", "{B3CB7E73-1A7F-4F38-B7F9-C2474A6F4D1F}"
 EndProject
@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{
 		..\.gitignore = ..\.gitignore
 		..\COPYING = ..\COPYING
 		..\COPYING.LESSER = ..\COPYING.LESSER
+		..\DriverPackage.md = ..\DriverPackage.md
 		..\LICENSE.MD = ..\LICENSE.MD
 		..\nuspecs\Log4Net.FluentNHibernateAppender.nuspec = ..\nuspecs\Log4Net.FluentNHibernateAppender.nuspec
 		..\README.md = ..\README.md
